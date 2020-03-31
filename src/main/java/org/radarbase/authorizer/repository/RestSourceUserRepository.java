@@ -32,4 +32,6 @@ public interface RestSourceUserRepository extends JpaRepository<RestSourceUser, 
             String externalUserId);
 
     List<RestSourceUser> findAllBySourceType(String sourceType);
+
+    Optional<RestSourceUser> findByUserId(String userId);
 }
