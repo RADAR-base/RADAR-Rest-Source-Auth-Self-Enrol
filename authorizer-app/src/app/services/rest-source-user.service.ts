@@ -42,6 +42,4 @@ export class RestSourceUserService {
   getUserBySubjectId(subjectId: string): Observable<RestSourceUser> {
     return this.http.get(this.serviceUrl + '/userId/' + subjectId)
   }
-
-
 }

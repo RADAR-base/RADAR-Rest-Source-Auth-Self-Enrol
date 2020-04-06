@@ -20,6 +20,7 @@ import {
   MatSortModule,
   MatTableModule
 } from '@angular/material';
+import {SuccessPageComponent} from "./components/rest-source-authorization/success-page-component";
 
 const appRoutes: Routes = [
   {
@@ -46,6 +47,10 @@ const appRoutes: Routes = [
     path: 'request-failed',
     component: ErrorReportingComponent,
   },
+  {
+    path: 'success',
+    component: SuccessPageComponent,
+  },
 ];
 
 
@@ -55,7 +60,8 @@ const appRoutes: Routes = [
     AppComponent,
     RestSourceUserRegistrationFormComponent,
     ErrorReportingComponent,
-    RestSourceUserListComponent
+    RestSourceUserListComponent,
+    SuccessPageComponent
   ],
   imports: [
     BrowserModule,

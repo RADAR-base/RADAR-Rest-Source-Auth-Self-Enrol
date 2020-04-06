@@ -54,7 +54,7 @@ export class UpdateRestSourceUserComponent implements OnInit {
     this.restSourceUser.startDate = this.startDate.toISOString();
     this.restSourceUser.endDate = this.endDate.toISOString();
     this.restSourceUserService.updateUser(this.restSourceUser).subscribe(() => {
-        return this.router.navigate(['/users']);
+        return this.router.navigate(['/success']);
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof ErrorEvent) {
