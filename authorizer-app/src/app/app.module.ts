@@ -1,6 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
 import {RouterModule, Routes} from "@angular/router";
@@ -13,12 +13,13 @@ import {RestSourceUserListComponent} from "./components/rest-source-authorizatio
 import {RestSourceUserRegistrationFormComponent} from "./components/rest-source-authorization/rest-source-user-registration-form.component";
 import {UpdateRestSourceUserComponent} from "./components/rest-source-authorization/update-rest-source-user.component";
 import {
-  MatPaginatorModule,
-  MatTableModule,
-  MatSortModule,
+  MatButtonModule,
   MatFormFieldModule,
   MatInputModule,
-  MatButtonModule } from '@angular/material';
+  MatPaginatorModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
 
 const appRoutes: Routes = [
   {
@@ -45,7 +46,6 @@ const appRoutes: Routes = [
     path: 'request-failed',
     component: ErrorReportingComponent,
   },
-
 ];
 
 
@@ -79,4 +79,5 @@ const appRoutes: Routes = [
   // entryComponents: [AddDeviceDialogComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

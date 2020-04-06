@@ -63,7 +63,7 @@ export class UpdateRestSourceUserComponent implements OnInit {
         } else {
           // The backend returned an unsuccessful response code.
           // The response body may contain clues as to what went wrong,
-          this.errorMessage = `Backend Error: Status=${err.status}, 
+          this.errorMessage = `Backend Error: Status=${err.status},
             Body: ${err.error.error}, ${err.error.message}`;
           if(err.status == 417) {
             this.errorMessage += " Please check the details are correct and try again.";
@@ -76,6 +76,11 @@ export class UpdateRestSourceUserComponent implements OnInit {
     this.restSourceUserService.addAuthorizedUser(code, state).subscribe(data => {
         this.restSourceUser = data;
 
+        this.restSourceUser.userId = localStorage.getItem("email");
+        this.restSourceUser.sourceId = localStorage.getItem("uuid");
+        this.restSourceUser.projectId = localStorage.getItem("project");
+        this.startDate = new Date(localStorage.getItem("startDate"));
+        this.endDate = new Date(localStorage.getItem("endDate"));
       },
       (err: Response) => {
         this.errorMessage = 'Cannot retrieve current user details'

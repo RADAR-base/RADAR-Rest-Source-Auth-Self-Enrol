@@ -39,5 +39,9 @@ export class RestSourceUserService {
     return this.http.delete(this.serviceUrl + '/' + userId);
   }
 
+  getUserBySubjectId(subjectId: string): Observable<RestSourceUser> {
+    return this.http.get(this.serviceUrl + '/userId/' + subjectId)
+  }
+
 
 }

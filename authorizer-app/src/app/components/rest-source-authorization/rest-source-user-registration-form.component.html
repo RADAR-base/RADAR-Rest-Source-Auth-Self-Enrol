@@ -1,11 +1,11 @@
 <form [formGroup]="sourceTypeForm" class="form-group container">
   <div class=" text-center">
     <label for="field_sourceType">Select an external service : </label>
-      <select class="form-control" id="field_sourceType" formControlName="selectedDeviceType"
-              (change)="onChange($event.target.value)">
-        <option selected disabled value="">-- select a third party service --</option>
-        <option [value]="sourceType" *ngFor="let sourceType of sourceTypes">{{sourceType}}</option>
-      </select>
+    <select class="form-control" id="field_sourceType" formControlName="selectedDeviceType"
+            (change)="onChange($event.target.value)">
+      <option selected disabled value="">-- select a device type --</option>
+      <option [value]="sourceType" *ngFor="let sourceType of sourceTypes">{{sourceType}}</option>
+    </select>
   </div>
 </form>
 <form *ngIf="sourceClientDetail" class="form-group" ngNoForm method="GET"
@@ -16,6 +16,19 @@
   <input type="hidden" name="scope" [value]="sourceClientDetail.scope"/>
   <input type="hidden" name="prompt" value="login"/>
   <!--<input type="hidden" name="redirect_uri" [value]="callbackUrl"/>-->
-  <button class="btn btn-success" type="submit" >Request to authorize</button>
+  <button class="btn btn-success" type="submit">Request to authorize</button>
 </form>
 
+<form #emailForm="ngForm">
+  <div class="form-group2">
+    <label for="emailId">Enter Email Id to check if already registered: </label>
+    <input class="form-control emailInput" name="emailId" type="email" [(ngModel)]="email"
+           [value]="email" id="emailId" placement="top" ngbTooltip="Your email id"
+           required minlength="4">
+  </div>
+  <button [disabled]="!emailForm.valid" type="button" (click)="checkIfUserExists(email)"
+          class="btn btn-success emailButton">Submit
+  </button>
+  <ngb-alert *ngIf="queryResult" type="info"
+             (close)="queryResult = null">{{ queryResult}}</ngb-alert>
+</form>
