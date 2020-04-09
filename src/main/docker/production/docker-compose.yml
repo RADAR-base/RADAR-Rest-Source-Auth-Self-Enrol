@@ -1,0 +1,68 @@
+version: '2'
+
+networks:
+  db:
+    internal: true
+
+  backend:
+    internal: true
+
+services:
+  radar-rest-source-auth-backend:
+    build:
+      context: ../../../../
+    image: radarbase/radar-rest-source-auth-backend-self-enrol:latest
+    networks:
+      - db
+      - backend
+      - default
+    restart: always
+    depends_on:
+      - auth-postgresql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-postgresql:5432/restsourceauth
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_USER}
+      - REST_SOURCE_AUTHORIZER_SOURCE_CLIENTS_FILE_PATH=app-includes/rest_source_clients_configs.yml
+      - APP_SLEEP=10 # gives time for the database to boot before the application
+    volumes:
+      - ./etc:/app-includes
+
+  auth-postgresql:
+    image: postgres:10.4-alpine
+    networks:
+      - db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_USER}
+      - POSTGRES_DB=restsourceauth
+
+  radar-rest-source-authorizer:
+    build:
+      context: ../../../../authorizer-app
+    image: radarbase/radar-rest-source-authorizer-self-enrol:latest
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      - radar-rest-source-auth-backend
+      - auth-postgresql
+
+  webserver:
+    image: nginx:1.17.9-alpine
+    networks:
+      - backend
+      - default
+    restart: always
+    depends_on:
+      - auth-postgresql
+      - radar-rest-source-auth-backend
+      - radar-rest-source-authorizer
+    volumes:
+      - "./etc/webserver/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./etc/webserver/rest-sources.htpasswd:/etc/nginx/rest-sources.htpasswd:ro"
+    ports:
+      - "80:80"
+      - "443:443"
+

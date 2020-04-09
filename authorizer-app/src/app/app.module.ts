@@ -25,7 +25,7 @@ import {SuccessPageComponent} from "./components/rest-source-authorization/succe
 const appRoutes: Routes = [
   {
     path: '',
-    component: RestSourceUserListComponent,
+    component: RestSourceUserRegistrationFormComponent,
   },
   {
     path: 'users',

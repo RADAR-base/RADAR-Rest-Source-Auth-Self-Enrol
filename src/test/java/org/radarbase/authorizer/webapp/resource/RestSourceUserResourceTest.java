@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Duration;
 import java.time.Instant;
-
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,80 +50,76 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(classes = RadarRestSourceAuthorizerApplication.class)
 public class RestSourceUserResourceTest {
 
-    @Autowired
-    private RestSourceUserService restSourceUserService;
+  public static final String DEFAULT_PROJ_NAME = "Test-proj";
+  public static final String DEFAULT_USER_ID = "Test-sub";
+  public static final String DEFAULT_SOURCE_ID = "Test-source";
+  public static final String DEFAULT_DEVICE_TYPE = "Fitbit";
+  public static final Instant DEFAULT_START_TIME = Instant.now().minus(Duration.ofHours(1));
+  public static final Instant DEFAULT_END_TIME = Instant.now().plus(Duration.ofHours(1));
+  public static final Boolean DEFAULT_AUTHORIZED = false;
+  public static final String DEFAULT_EXTERNAL_USER_ID = "86420984";
+  @Autowired
+  private RestSourceUserService restSourceUserService;
+  @Autowired
+  private RestSourceUserRepository restSourceUserRepository;
+  private RestSourceUser sampleRestSourceUser;
 
-    @Autowired
-    private RestSourceUserRepository restSourceUserRepository;
+  private MockMvc restUserMockMvc;
 
-    public static final String DEFAULT_PROJ_NAME = "Test-proj";
-    public static final String DEFAULT_USER_ID = "Test-sub";
-    public static final String DEFAULT_SOURCE_ID = "Test-source";
-    public static final String DEFAULT_DEVICE_TYPE = "Fitbit";
-    public static final Instant DEFAULT_START_TIME = Instant.now().minus(Duration.ofHours(1));
-    public static final Instant DEFAULT_END_TIME = Instant.now().plus(Duration.ofHours(1));
-    public static final Boolean DEFAULT_AUTHORIZED = false;
-    public static final String DEFAULT_EXTERNAL_USER_ID = "86420984";
+  /**
+   * Create an entity for this test.
+   *
+   * <p>This is a static method, as tests for other entities might also need it,
+   * if they test an entity which requires the current entity.</p>
+   */
+  public static RestSourceUser createEntity() {
+    return new RestSourceUser()
+        .projectId(DEFAULT_PROJ_NAME)
+        .userId(DEFAULT_USER_ID)
+        .sourceId(DEFAULT_SOURCE_ID)
+        .startDate(DEFAULT_START_TIME)
+        .endDate(DEFAULT_END_TIME)
+        .externalUserId(DEFAULT_EXTERNAL_USER_ID)
+        .authorized(DEFAULT_AUTHORIZED);
+  }
 
-    private RestSourceUser sampleRestSourceUser;
+  public static RestSourceUserPropertiesDTO createDefaultDeviceDto() {
+    return new RestSourceUserPropertiesDTO(createEntity());
+  }
 
-    private MockMvc restUserMockMvc;
+  @Before
+  public void setUp() {
+    MockitoAnnotations.initMocks(this);
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    RestSourceUserResource restSourceUserResource = new RestSourceUserResource(
+        restSourceUserService, Optional.empty());
+    ReflectionTestUtils
+        .setField(restSourceUserResource, "restSourceUserService", restSourceUserService);
 
-        RestSourceUserResource restSourceUserResource = new RestSourceUserResource();
-        ReflectionTestUtils.setField(restSourceUserResource, "restSourceUserService", restSourceUserService);
+    this.restUserMockMvc = MockMvcBuilders.standaloneSetup(restSourceUserResource).build();
+  }
 
+  @Before
+  public void initTest() {
+    sampleRestSourceUser = createEntity();
+  }
 
+  @Test
+  @Transactional
+  public void getAllUsers() throws Exception {
+    // Initialize the database
+    restSourceUserRepository.saveAndFlush(sampleRestSourceUser);
 
-        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(restSourceUserResource).build();
-    }
-
-
-    /**
-     * Create an entity for this test.
-     *
-     * <p>This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.</p>
-     */
-    public static RestSourceUser createEntity() {
-        return new RestSourceUser()
-                .projectId(DEFAULT_PROJ_NAME)
-                .userId(DEFAULT_USER_ID)
-                .sourceId(DEFAULT_SOURCE_ID)
-                .startDate(DEFAULT_START_TIME)
-                .endDate(DEFAULT_END_TIME)
-                .externalUserId(DEFAULT_EXTERNAL_USER_ID)
-                .authorized(DEFAULT_AUTHORIZED);
-    }
-
-    public static RestSourceUserPropertiesDTO createDefaultDeviceDto() {
-        return new RestSourceUserPropertiesDTO(createEntity());
-    }
-
-    @Before
-    public void initTest() {
-        sampleRestSourceUser = createEntity();
-    }
-
-    @Test
-    @Transactional
-    public void getAllUsers() throws Exception {
-        // Initialize the database
-        restSourceUserRepository.saveAndFlush(sampleRestSourceUser);
-
-        // Get all the users
-        restUserMockMvc.perform(get("/users"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.users.[*].projectId").value(hasItem(DEFAULT_PROJ_NAME)))
-                .andExpect(jsonPath("$.users.[*].userId").value(hasItem(DEFAULT_USER_ID)))
-                .andExpect(jsonPath("$.users.[*].sourceId").value(hasItem(DEFAULT_SOURCE_ID)))
-                .andExpect(jsonPath("$.users.[*].externalUserId").value(
-                        hasItem(DEFAULT_EXTERNAL_USER_ID.toString())));
-    }
+    // Get all the users
+    restUserMockMvc.perform(get("/users"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.users.[*].projectId").value(hasItem(DEFAULT_PROJ_NAME)))
+        .andExpect(jsonPath("$.users.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+        .andExpect(jsonPath("$.users.[*].sourceId").value(hasItem(DEFAULT_SOURCE_ID)))
+        .andExpect(jsonPath("$.users.[*].externalUserId").value(
+            hasItem(DEFAULT_EXTERNAL_USER_ID.toString())));
+  }
 
 
 }
