@@ -24,7 +24,7 @@
     <label for="emailId">Enter Email Id to check if already registered: </label>
     <input class="form-control emailInput" name="emailId" type="email" [(ngModel)]="email"
            [value]="email" id="emailId" placement="top" ngbTooltip="Your email id"
-           required minlength="4">
+           required minlength="4" email="true" >
   </div>
   <button [disabled]="!emailForm.valid" type="button" (click)="checkIfUserExists(email)"
           class="btn btn-success emailButton">Submit

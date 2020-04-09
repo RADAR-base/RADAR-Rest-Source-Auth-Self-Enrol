@@ -29,7 +29,7 @@ import { UsersPageComponent } from "./pages/users/containers/users-page.componen
 const appRoutes: Routes = [
   {
     path: "",
-    component: UsersPageComponent
+    component: AuthorizePageComponent
   },
   {
     path: "users",

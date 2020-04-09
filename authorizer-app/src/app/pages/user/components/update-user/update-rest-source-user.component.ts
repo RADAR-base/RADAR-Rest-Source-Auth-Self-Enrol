@@ -21,6 +21,7 @@ export class UpdateRestSourceUserComponent implements OnInit {
   startDate: Date;
   endDate: Date;
   isEditing = false;
+  defaultProjectId = "covid-collab";
 
   constructor(
     private restSourceUserService: RestSourceUserService,
@@ -86,18 +87,37 @@ export class UpdateRestSourceUserComponent implements OnInit {
   private addRestSourceUser(code: string, state: string) {
     this.restSourceUserService.addAuthorizedUser(code, state).subscribe(
       data => {
-        this.restSourceUser = data;
-
-        this.restSourceUser.userId = localStorage.getItem("email");
-        this.restSourceUser.sourceId = localStorage.getItem("uuid");
-        this.restSourceUser.projectId = localStorage.getItem("project");
-        this.startDate = new Date(localStorage.getItem("startDate"));
-        this.endDate = new Date(localStorage.getItem("endDate"));
+        this.updateUserValues(data);
       },
       (err: Response) => {
         this.errorMessage = "Cannot retrieve current user details";
         window.setTimeout(() => this.router.navigate([""]), 5000);
       }
     );
+  }
+
+  updateUserValues(data) {
+    this.restSourceUser = data;
+
+    this.restSourceUser.userId = localStorage.getItem("email");
+    if (localStorage.getItem("uuid") != null) {
+      this.restSourceUser.sourceId = localStorage.getItem("uuid");
+    }
+    this.restSourceUser.projectId = localStorage.getItem("project");
+
+    if (this.restSourceUser.projectId == null) {
+      this.restSourceUser.projectId = this.defaultProjectId;
+    }
+
+    let sDate = localStorage.getItem("startDate");
+    if (sDate == null) {
+      sDate = "2020-01-01";
+    }
+    let eDate = localStorage.getItem("endDate");
+    if (eDate == null) {
+      eDate = "2020-12-31";
+    }
+    this.startDate = new Date(sDate);
+    this.endDate = new Date(eDate);
   }
 }
