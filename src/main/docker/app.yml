@@ -20,6 +20,11 @@ services:
           - POSTGRES_DB=restsourceauth
 
     radar-rest-source-authorizer:
+        build:
+          args:
+            BASE_HREF: "/"
+            PROFILE: ""
+          context: ../../../authorizer-app
         image: radarbase/radar-rest-source-authorizer:latest
         depends_on:
           - radar-rest-source-auth-backend

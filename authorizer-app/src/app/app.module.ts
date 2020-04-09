@@ -21,6 +21,7 @@ import { RestSourceUserListComponent } from "./pages/users/components/users-list
 import { RestSourceUserRegistrationFormComponent } from "./pages/authorize/components/registration-form/rest-source-user-registration-form.component";
 import { RestSourceUserService } from "./services/rest-source-user.service";
 import { SourceClientAuthorizationService } from "./services/source-client-authorization.service";
+import { SuccessPageComponent } from "./pages/success/containers/success-page-component";
 import { UpdateRestSourceUserComponent } from "./pages/user/components/update-user/update-rest-source-user.component";
 import { UserPageComponent } from "./pages/user/containers/user-page.component";
 import { UsersPageComponent } from "./pages/users/containers/users-page.component";
@@ -49,6 +50,10 @@ const appRoutes: Routes = [
   {
     path: "request-failed",
     component: ErrorReportingComponent
+  },
+  {
+    path: "success",
+    component: SuccessPageComponent
   }
 ];
 
@@ -61,7 +66,8 @@ const appRoutes: Routes = [
     AppComponent,
     RestSourceUserRegistrationFormComponent,
     ErrorReportingComponent,
-    RestSourceUserListComponent
+    RestSourceUserListComponent,
+    SuccessPageComponent
   ],
   imports: [
     BrowserModule,

@@ -125,6 +125,21 @@ public class RestSourceUserService {
 
     }
 
+    @Transactional(readOnly = true)
+    public RestSourceUserPropertiesDTO getRestSourceUserByUserId(String userId) {
+      Optional<RestSourceUser> sourceUser = restSourceUserRepository.findByUserId(userId);
+
+      if (sourceUser.isPresent()) {
+        RestSourceUser restSourceUserToSave = sourceUser.get();
+        return new RestSourceUserPropertiesDTO(restSourceUserRepository.save(restSourceUserToSave));
+      } else {
+        throw new NotFoundException(
+            "Unable to update rest source user. RestSourceUser not found with " + "user id "
+                + userId);
+      }
+
+    }
+
     /**
      * Removes user from database and revokes access token and refresh token
      *

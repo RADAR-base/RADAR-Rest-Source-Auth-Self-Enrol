@@ -109,6 +109,13 @@ public class RestSourceUserResource {
         .ok().header("user-removed", id).build();
   }
 
+  @GetMapping("/users/userId/{userId}")
+  public ResponseEntity<RestSourceUserPropertiesDTO> getRestSourceUserByUserId(
+      @PathVariable("userId") String userId) {
+    logger.debug("Get user token for rest source user with subject id {}", userId);
+    return ResponseEntity
+        .ok(this.restSourceUserService.getRestSourceUserByUserId(userId));
+  }
 
   @GetMapping("/users/{id}/token")
   public ResponseEntity<TokenDTO> getUserToken(@PathVariable String id) {
